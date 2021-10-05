@@ -6,10 +6,10 @@ const Index = () => {
     return (
         <>
       <div className='max-w-md w-full -space-y-0'>
-        <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-600'>
+        <h2 className='text-center text-3xl font-extrabold text-gray-600'>
           Iniciar Sesion
         </h2>
-        <form className='mt-8 space-y-2'>
+        <form className='mt-2 space-y-2'>
           <input type='hidden' name='remember' defaultValue='true' />
           <div className='rounded-md shadow-sm -space-y-px'>
             <div>

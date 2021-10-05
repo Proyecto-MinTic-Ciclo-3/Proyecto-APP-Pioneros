@@ -15,7 +15,7 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
-          <Route path={["/menu/ventas","/menu/productos","/menu/usuarios"]}>
+          <Route path={["/menu","/menu/ventas","/menu/productos","/menu/usuarios"]}>
               <PrivateLayout>
                 <Switch>              
                       <Route path="/menu/ventas">
@@ -27,14 +27,13 @@ function App() {
                       <Route path="/menu/usuarios">
                         <Usuarios/>
                       </Route>
+                      <Route path="/menu">
+                        <Menu/>
+                      </Route>
                 </Switch>
               </PrivateLayout>
           </Route>
-         
-              <Route path="/menu">
-                <Menu/>
-              </Route>
-                     
+                                     
            
           <Route path={["/","/registro"]}>
             <AuthonLayout>

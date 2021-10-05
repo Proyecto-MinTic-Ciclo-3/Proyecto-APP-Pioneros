@@ -1,30 +1,21 @@
+import ImagenLogo from 'components/ImagenLogo'
+import Index from 'pages/Index'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
 const Menu = () => {
   return (
-    <>
-      <h2 className="text-gray-600 flex  justify-center">Sistema de Administración</h2>
-      <div className="flex flex-row items-center h-screen bg-blue-400 justify-center">
-
-        <section className='m-10 bg-red-400 p-32 rounded-full text-white'>
-
-          <Link to="/menu/ventas">
-            <span className='font-medium text-indigo-600 hover:text-indigo-500'>Ventas</span>
-          </Link>
-        </section>
-        <section className='m-10 bg-red-400 p-32 rounded-full text-white'>
-          <Link to="/menu/productos">
-            <span className='font-medium text-indigo-600 hover:text-indigo-500'>Productos</span>
-          </Link>
-        </section>
-        <section className='m-10 bg-red-400 p-32 rounded-full text-white'>
-        <Link to="/menu/usuarios">
-            <span className='font-medium text-indigo-600 hover:text-indigo-500'>Usuarios</span>
-        </Link>
-        </section>
+    <div className="flex flex-col w-full">
+      <h2 className="text-gray-600 flex  justify-center m-2 text-3xl font-bold p-3">Sistema de Administración</h2>
+      <div className="flex  items-center bg-blue-400 h-full justify-between">
+        <ul className="flex flex-row w-full m-20 p-10 justify-between bg-indigo-500">
+          <li className="bg-indigo-700 rounded-md p-20">Ventas</li>
+          <li className="bg-indigo-700 rounded-md p-20">Productos</li>
+          <li className="bg-indigo-700 rounded-md p-20">Usuarios</li>
+        </ul>     
+        
       </div>
-    </>
+    </div>
   )
 }
 

@@ -127,7 +127,7 @@ const FormularioRegistroVentas = ({setMostrarTabla,listaVentas,setVentas}) => {
       nuevoVenta[key] = value;
     });
   setMostrarTabla(true)
-  toast.success("Venta Regitrada")
+  toast.success("Venta Actualizada")
   setVentas([...listaVentas,nuevoVenta])
   }
   return (
