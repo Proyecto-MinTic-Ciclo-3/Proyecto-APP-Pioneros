@@ -1,5 +1,4 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
 import ImagenLogo from 'components/ImagenLogo';
 
 const AuthonLayout = ({children}) => {
