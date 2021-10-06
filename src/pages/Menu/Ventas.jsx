@@ -29,6 +29,7 @@ const Ventas = () => {
   const [ventas, setVentas] = useState([]);
   const [texto, setTexto] = useState(["Registrar"]);
   
+  
   useEffect(() => {
     //Obtener lista de backend
     setVentas(ventasBackend);
@@ -37,9 +38,10 @@ const Ventas = () => {
   useEffect(() => {
     if (mostrarTabla) {
       setTexto("Registrar  Nueva Venta")
-      
+           
     } else {
       setTexto("Mostrar todad las ventas")
+      
     }
   }, [mostrarTabla])
   
