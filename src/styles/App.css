@@ -1,4 +1,32 @@
+
 /* ./src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.tabla td,
+.tabla th{
+    justify-self: center;
+    border: 1px solid rgb(26, 25, 25);
+    padding: 1px;
+    
+}
+.tabla th {
+    background-color: rgb(27, 169, 194);
+    padding-top: 10;
+    padding-bottom: 10;
+}
+.tabla tr:nth-child(even){
+    background-color: rgb(212, 212, 212);
+
+}
+.tabla tr{
+    text-align: center;
+    
+        
+}
+.tabla tr:hover{
+    cursor: pointer;
+    background-color: rgb(182, 179, 184);
+}
