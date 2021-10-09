@@ -4,29 +4,9 @@ import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-const ventasBackend = [
-  {
-    id_venta: 12,
-    fecha: "23/03/2005",
-    producto: 3,
-    id_cliente: 1,
-    vendedor: "juan",
-    cantidad: 3,
-    precio: 4550
+import axios from 'axios';
 
-  },
-  {
-    id_venta: 11,
-    fecha: "23/02/2005",
-    producto: 3,
-    id_cliente: 11,
-    vendedor: "juan",
-    cantidad: 3,
-    precio: 4550
 
-  }
-
-];
 const Ventas = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
   const [ventas, setVentas] = useState([]);
@@ -35,8 +15,23 @@ const Ventas = () => {
 
   useEffect(() => {
     //Obtener lista de backend
-    setVentas(ventasBackend);
-  }, [])
+    const obtenerVentas = async () => {
+      const options = { method: 'GET', url: 'http://localhost:5000/ventas' };
+      await axios
+        .request(options)
+        .then(function (response) {
+          setVentas(response.data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    };
+
+    //obtener lista de vehículos desde el backend
+    if (mostrarTabla) {
+      obtenerVentas();
+    }
+  }, [mostrarTabla]);
 
   useEffect(() => {
     if (mostrarTabla) {
@@ -168,7 +163,7 @@ const FilaVenta = ({ venta }) => {
 
 const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) => {
   const form = useRef(null)
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
     const fd = new FormData(form.current);
 
@@ -176,9 +171,25 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
     fd.forEach((value, key) => {
       nuevoVenta[key] = value;
     });
+    const options = {
+      method: 'POST',
+      url: 'http://localhost:5000/ventas/nueva',
+      headers: { 'Content-Type': 'application/json' },
+      data: { id_venta: nuevoVenta.id_venta, fecha: nuevoVenta.fecha, producto: nuevoVenta.producto, vendedor:nuevoVenta.vendedor, cantidad:nuevoVenta.cantidad, precio:nuevoVenta.precio },
+    };
+    await axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+        toast.success('Venta registrada con éxito');
+      })
+      .catch(function (error) {
+        console.error(error);
+        toast.error('Error creando un vehículo');
+      });
     setMostrarTabla(true)
-    toast.success("Venta Actualizada")
-    setVentas([...listaVentas, nuevoVenta])
+    toast.success("Venta Registrada")
+    
   }
   return (
     <div>
