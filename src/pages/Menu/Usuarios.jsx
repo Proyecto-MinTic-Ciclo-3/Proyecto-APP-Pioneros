@@ -60,7 +60,7 @@ const Usuarios = () => {
           <div>
             <label>
               <span className="text-xl font-bold mr-1">Buscar:</span>
-              <input className="rounded" placeholder="Digite el id de la venta" />
+              <input className="rounded" placeholder="Digite el id del usuario" />
             </label>
           </div>
           <button onClick={() => { setMostrarTabla(!mostrarTabla) }} className=' cursor-pointer m-1 group relative flex justify-center py-2 px-2 border border-transparent text-sm font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 '>{texto}</button>
@@ -91,7 +91,6 @@ const TablaUsuarios = ({ listaUsuarios,setEjecutarConsulta }) => {
             <th>IdUsuario</th>
             <th>Nombre</th>
             <th>Apellido</th>
-            <th>Vendedor</th>
             <th>Cedula</th>
             <th>Correo</th>
             <th>Rol</th>
@@ -138,7 +137,7 @@ const FilaUsuario = ({
       .request(options)
       .then(function (response) {
         console.log(response.data);
-        toast.success('usurio Modificado con éxito');
+        toast.success('usuario Modificado con éxito');
         setEdit(false);
         setEjecutarConsulta(true);
       })
@@ -181,43 +180,38 @@ const FilaUsuario = ({
           <td><input
           className="bg-gray-50 border border-gray-600 p-1 rounded-lg m-1 w-20" 
           type="text" 
-          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,fecha:e.target.value})}
-          value={infoNuevoUsuario.fecha}></input></td>
+          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,nombre:e.target.value})}
+          value={infoNuevoUsuario.nombre}></input></td>
           <td><input
           className="bg-gray-50 border border-gray-600 p-1 rounded-lg m-1 w-20" 
           type="text" 
-          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,producto:e.target.value})} 
-          value={infoNuevoUsuario.producto}></input></td>
+          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,apellido:e.target.value})} 
+          value={infoNuevoUsuario.apellido}></input></td>
           <td><input
           className="bg-gray-50 border border-gray-600 p-1 rounded-lg m-1 w-20" 
           type="text" 
-          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,id_cliente:e.target.value})} 
-          value={infoNuevoUsuario.id_cliente}></input></td>
+          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,cedula:e.target.value})} 
+          value={infoNuevoUsuario.cedula}></input></td>
           <td><input
           className="bg-gray-50 border border-gray-600 p-1 rounded-lg m-1 w-20" 
           type="text" 
-          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,vendedor:e.target.value})} 
-          value={infoNuevoUsuario.vendedor}></input></td>
+          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,correo:e.target.value})} 
+          value={infoNuevoUsuario.correo}></input></td>
           <td><input
           className="bg-gray-50 border border-gray-600 p-1 rounded-lg m-1 w-20" 
           type="text" 
-          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,cantidad:e.target.value})} 
-          value={infoNuevoUsuario.cantidad}></input></td>
-          <td><input
-          className="bg-gray-50 border border-gray-600 p-1 rounded-lg m-1 w-20" 
-          type="text" 
-          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,precio:e.target.value})} 
-          value={infoNuevoUsuario.precio}></input></td>
+          onChange={(e)=>setInfoNuevoUsuario({...infoNuevoUsuario,rol:e.target.value})} 
+          value={infoNuevoUsuario.rol}></input></td>
+          
         </>
       ) : (
         <>
-          <td>{usuario.id_venta}</td>
-          <td>{usuario.fecha}</td>
-          <td>{usuario.producto}</td>
-          <td>{usuario.id_cliente}</td>
-          <td>{usuario.vendedor}</td>
-          <td>{usuario.cantidad}</td>
-          <td>{usuario.precio}</td>
+          <td>{usuario.id_usuario}</td>
+          <td>{usuario.nombre}</td>
+          <td>{usuario.apellido}</td>
+          <td>{usuario.cedula}</td>
+          <td>{usuario.correo}</td>
+          <td>{usuario.rol}</td>          
         </>
       )}
 
@@ -252,13 +246,13 @@ const FormularioRegistroUsuarios = ({ setMostrarTabla, listaVentas, setVentas })
     });
     const options = {
       method: 'POST',
-      url: 'http://localhost:5000/Usuarios/nuevo',
+      url: 'http://localhost:5000/usuarios/nuevo',
       headers: { 'Content-Type': 'application/json' },
-      data: { id_venta: nuevoUsuario.id_venta,
-       fecha: nuevoUsuario.fecha,
-        producto: nuevoUsuario.producto,
-         id_cliente:nuevoUsuario.id_cliente,vendedor:nuevoUsuario.vendedor, 
-         cantidad:nuevoUsuario.cantidad, precio:nuevoUsuario.precio },
+      data: { id_usuario: nuevoUsuario.id_usuario,
+       nombre: nuevoUsuario.nombre,
+        apellido: nuevoUsuario.apellido,
+         cedula:nuevoUsuario.cedula,correo:nuevoUsuario.correo, 
+        rol:nuevoUsuario.rol },
     };
     await axios
       .request(options)
@@ -278,58 +272,58 @@ const FormularioRegistroUsuarios = ({ setMostrarTabla, listaVentas, setVentas })
     <div>
       <form ref={form} onSubmit={submitForm}>
         <h2 className='text-black font-bold font-sans text-xl m-1'>Registro de ventas</h2>
-        <label className="flex flex-col" htmlFor="id_venta">
+        <label className="flex flex-col" htmlFor="id_usuario">
           Id usuario :
           <input 
           required
-          name="id_venta" className="bg-gray-50 border border-gray-500  m-0.1 rounded-md " 
+          name="id_usuario" className="bg-gray-50 border border-gray-500  m-0.1 rounded-md " 
           type='number' 
-          placeholder='id_venta' />
+          placeholder='id_usuario' autocomplete="off" />
         </label>
-        <lavel className="flex flex-col" htmlFor="fecha">
+        <lavel className="flex flex-col" htmlFor="nombre">
           Nombre:
           <input 
           required
-          name="fecha" 
+          name="nombre" 
           className="bg-gray-50 border border-gray-500  m-0.1 rounded-md " 
-          type='date' 
-          placeholder='fecha' />
+          type='text' 
+          placeholder='nombre'  autocomplete="off"/>
         </lavel>
-        <label className="flex flex-col" htmlFor="producto">
+        <label className="flex flex-col" htmlFor="apellido">
           Apellido:
           <input
            required 
-           name="producto"
+           name="apellido"
            className="bg-gray-50 border border-gray-500  m-0.1 rounded-md " 
            type='text' 
-           placeholder='producto' />
+           placeholder='apellido' autocomplete="off" />
         </label>
-        <label className="flex flex-col" htmlFor="id_cliente">
+        <label className="flex flex-col" htmlFor="cedula">
           Cedula:
           <input 
           required 
-          name="id_cliente" 
+          name="cedula" 
           className="bg-gray-50 border border-gray-500 m-0.1 rounded-md " 
           type='number'
-           placeholder='Id cliente' />
+           placeholder='cédula' autocomplete="off" />
         </label>
-        <label className="flex flex-col" htmlFor="vendedor">
+        <label className="flex flex-col" htmlFor="Correo">
           Correo:
           <input 
           required
-           name="vendedor"
+           name="correo"
             className="bg-gray-50 border border-gray-500 m-0.1 rounded-md " 
             type='text' 
-            placeholder='Nombre del vendedor' />
+            placeholder='correo electronico' autoComplete="off" />
         </label>
-        <label className="flex flex-col" htmlFor="cantidad">
+        <label className="flex flex-col" htmlFor="rol">
           Rol:
           <input 
           required
-          name="cantidad" 
+          name="rol" 
           className="bg-gray-50 border border-gray-500  m-0.1 rounded-md " 
           type='text'
-          placeholder='cantidad' />
+          placeholder='rol' autocomplete="off" />
         </label>
         <button 
         required 
