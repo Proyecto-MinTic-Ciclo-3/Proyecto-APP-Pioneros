@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 const SidebarResponsive = () => {
     const [mostrarNav,setMostrarNav]=useState(false);
     return (
-        <div className="md:hidden" onClick={()=>{setMostrarNav(!mostrarNav)}} >
+        <div className="lg:hidden" onClick={()=>{setMostrarNav(!mostrarNav)}} >
                 <FontAwesomeIcon icon={faBars} className="hover:bg-yellow-200"/>
             {mostrarNav &&( 
             <ul className="bg-gray-900">

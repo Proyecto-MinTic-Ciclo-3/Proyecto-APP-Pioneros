@@ -7,7 +7,7 @@ import useActiveRoute from 'hooks/useActiveRoute'
 
 const Sidebar = () => {
   return (
-    <nav className="hidden md:flex w-72  flex-col   bg-gradient-to-t from-gray-500 to-white p-4 ">
+    <nav className="hidden lg:flex md:flex w-72  flex-col   bg-gradient-to-t from-gray-500 to-white p-4 ">
 
       <Link to="/">
         <ImagenLogo />
