@@ -103,7 +103,7 @@ const TablaVentas = ({ listaVentas,setEjecutarConsulta }) => {
             return (
               <FilaVenta key={nanoid()} venta={venta} setEjecutarConsulta={setEjecutarConsulta} />
             );
-          })};
+          })}
         </tbody>
       </table>
           
