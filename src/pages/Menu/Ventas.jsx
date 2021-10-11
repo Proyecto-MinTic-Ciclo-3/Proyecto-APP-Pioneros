@@ -311,7 +311,7 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
             required
             name="id_venta" className="bg-gray-50 border border-gray-500  m-0.1 rounded-md "
             type='number'
-            placeholder='id_venta' />
+            placeholder='id_venta' autoComplete="off" />
         </label>
         <lavel className="flex flex-col" htmlFor="fecha">
           Fecha:
@@ -320,7 +320,7 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
             name="fecha"
             className="bg-gray-50 border border-gray-500  m-0.1 rounded-md "
             type='date'
-            placeholder='fecha' />
+            placeholder='fecha'  autoComplete="off"/>
         </lavel>
         <label className="flex flex-col" htmlFor="producto">
           Producto:
@@ -329,7 +329,7 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
             name="producto"
             className="bg-gray-50 border border-gray-500  m-0.1 rounded-md "
             type='text'
-            placeholder='producto' />
+            placeholder='producto' autoComplete="off" />
         </label>
         <label className="flex flex-col" htmlFor="id_cliente">
           Id Cliente:
@@ -338,7 +338,7 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
             name="id_cliente"
             className="bg-gray-50 border border-gray-500 m-0.1 rounded-md "
             type='number'
-            placeholder='Id cliente' />
+            placeholder='Id cliente' autoComplete="off" />
         </label>
         <label className="flex flex-col" htmlFor="vendedor">
           Vendedor:
@@ -347,7 +347,7 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
             name="vendedor"
             className="bg-gray-50 border border-gray-500 m-0.1 rounded-md "
             type='text'
-            placeholder='Nombre del vendedor' />
+            placeholder='Nombre del vendedor' autoComplete="off" />
         </label>
         <label className="flex flex-col" htmlFor="cantidad">
           Cantidad:
@@ -365,9 +365,7 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
             name="precio"
             className="bg-gray-50 border border-gray-500  m-01 rounded-md "
             type='number'
-            placeholder='precio'>
-
-          </input>
+            placeholder='precio'autoComplete="off"/>         
         </label>
         <button
           required
