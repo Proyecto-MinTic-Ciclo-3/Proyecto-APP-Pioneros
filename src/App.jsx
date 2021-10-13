@@ -1,11 +1,11 @@
-import {AuthonLayout as AuthonLayout}from "layouts/AuthonLayout";
-import {PrivateLayout as PrivateLayout}from "layouts/PrivateLayout";
-import {Index as Index} from "pages/Index";
-import {Menu as Menu}from "pages/Menu/Index";
-import {Usuarios as Usuarios}from "pages/Menu/Usuarios";
-import {Ventas as Ventas}from 'pages/Menu/Ventas'
-import {Productos as Productos}from "pages/Menu/Productos";
-import {Registro as Registro}from "pages/Registro"
+import AuthonLayout from "layouts/AuthonLayout";
+import PrivateLayout from "layouts/PrivateLayout";
+import Index  from "pages/Index";
+import Menu from "pages/Menu/Index";
+import Usuarios from "pages/Menu/Usuarios";
+import Ventas from 'pages/Menu/Ventas'
+import Productos from "pages/Menu/Productos";
+import Registro from "pages/Registro"
 import { BrowserRouter as Router, Switch, Route, } from "react-router-dom";
 import 'styles/App.css'
 

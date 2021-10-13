@@ -102,7 +102,7 @@ const TablaUsuarios = ({ listaUsuarios,setEjecutarConsulta }) => {
             return (
               <FilaUsuario key={nanoid()} usuario={usuario} setEjecutarConsulta={setEjecutarConsulta} />
             );
-          })};
+          })}
         </tbody>
       </table>
           
