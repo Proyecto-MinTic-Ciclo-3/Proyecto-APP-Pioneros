@@ -12,8 +12,7 @@ import 'styles/App.css'
 
 function App() {
   return (
-    <div className="App">
-      <div></div>
+    <div className="App">      
       <Router>
         <Switch>
           <Route path={["/menu","/menu/ventas","/menu/productos","/menu/usuarios"]}>
