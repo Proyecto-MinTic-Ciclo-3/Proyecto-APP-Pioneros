@@ -27,7 +27,7 @@ function App() {
                       <Route path="/menu/usuarios">
                         <Usuarios/>
                       </Route>
-                      <Route path="/index">
+                      <Route path="/">
                         <Menu/>
                       </Route>
                 </Switch>
