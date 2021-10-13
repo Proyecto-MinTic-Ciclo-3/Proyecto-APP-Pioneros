@@ -1,11 +1,11 @@
-import AuthonLayout from "layouts/AuthonLayout";
-import PrivateLayout from "layouts/PrivateLayout";
-import Index from "pages/Index";
-import Menu from "pages/menu/Index";
-import Usuarios from "pages/menu/Usuarios";
-import Ventas from 'pages/menu/Ventas'
-import Productos from "pages/menu/Productos";
-import Registro from "pages/Registro"
+import {AuthonLayout as AuthonLayout}from "layouts/AuthonLayout";
+import {PrivateLayout as PrivateLayout}from "layouts/PrivateLayout";
+import {Index as Index} from "pages/Index";
+import {Menu as Menu}from "pages/Menu/Index";
+import {Usuarios as Usuarios}from "pages/Menu/Usuarios";
+import {Ventas as Ventas}from 'pages/Menu/Ventas'
+import {Productos as Productos}from "pages/Menu/Productos";
+import {Registro as Registro}from "pages/Registro"
 import { BrowserRouter as Router, Switch, Route, } from "react-router-dom";
 import 'styles/App.css'
 
@@ -13,6 +13,7 @@ import 'styles/App.css'
 function App() {
   return (
     <div className="App">
+      <div></div>
       <Router>
         <Switch>
           <Route path={["/menu","/menu/ventas","/menu/productos","/menu/usuarios"]}>
@@ -49,7 +50,7 @@ function App() {
           </Route>       
       </Switch>
     </Router>
-  </div>   
+  </div>     
     
   );
 }
