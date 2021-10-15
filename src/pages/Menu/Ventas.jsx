@@ -4,7 +4,10 @@ import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import { deleteVenta } from 'utils/api';
+import { editarVenta } from 'utils/api';
+import { crearVenta } from 'utils/api';
+import { obtenerVentas } from 'utils/api';
 
 
 
@@ -15,31 +18,19 @@ const Ventas = () => {
   const [texto, setTexto] = useState(["Registrar"]);
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
 
-  const obtenerVentas = async () => {
-    const options = { method: 'GET', url: 'http://localhost:5000/ventas' };
-    await axios
-      .request(options)
-      .then(function (response) {
-        setVentas(response.data);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-    setEjecutarConsulta(false)
-  };
-
-
   useEffect(() => {
     if (ejecutarConsulta) {
-      obtenerVentas();
-      setEjecutarConsulta(false);
+      obtenerVentas(
+        (response)=>{setVentas(response.data)},
+        (error)=>{console.error(error)}
+      );
+      setEjecutarConsulta(false)      
     }
   }, [ejecutarConsulta]);
 
   useEffect(() => {
     //obtener lista de vehículos desde el backend
     if (mostrarTabla) {
-
       setEjecutarConsulta(true)
     }
   }, [mostrarTabla]);
@@ -138,6 +129,7 @@ const FilaVenta = ({
   const [edit, setEdit] = useState(false)
   const [infoNuevaVenta, setInfoNuevaVenta] = useState(
     {
+      _id:venta._id,
       id_venta: venta.id_venta,
       fecha: venta.fecha,
       producto: venta.producto,
@@ -151,45 +143,40 @@ const FilaVenta = ({
   const actualizarventa = async () => {
     //enviar la info al backend
     console.log(venta)
-    const options = {
-      method: 'PATCH',
-      url: `http://localhost:5000/ventas/${venta._id}/`,
-      headers: { 'Content-Type': 'application/json' },
-      data: { ...infoNuevaVenta},
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success('Venta modificada con éxito');
-        setEdit(false);
-        setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        toast.error('Error modificando la venta');
+    await editarVenta(
+      venta._id,
+      {
+        id_venta: infoNuevaVenta.id_venta,
+        fecha: infoNuevaVenta.fecha,
+        producto: infoNuevaVenta.producto,
+        id_cliente: infoNuevaVenta.id_cliente,
+        vendedor: infoNuevaVenta.vendedor,
+        cantidad: infoNuevaVenta.cantidad,
+        precio: infoNuevaVenta.precio
+      },
+      (response)=>{
+        console.log(response.data)
+        toast.success('Venta actualizada')
+        setEdit(false)
+        setEjecutarConsulta(true)
+      },
+      (error)=>{
         console.error(error);
-      });
-  }
+        toast.error('<Error al actualizar la venta')
+      }); 
+  };
   const eliminarVenta = async () => {
-    const options = {
-      method: 'DELETE',
-      url: `http://localhost:5000/ventas/${venta._id}`,
-      headers: { 'Content-Type': 'application/json' },
-      data: { id: venta._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
+    await deleteVenta(venta._id,
+      (response)=>{
         console.log(response.data);
         toast.success('venta eliminada con éxito');
         setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
+      },
+      (error)=>{
         console.error(error);
         toast.error('Error eliminando la venta');
-      });
+      });  
+   
   }
 
 
@@ -275,30 +262,25 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
     fd.forEach((value, key) => {
       nuevoVenta[key] = value;
     });
-    const options = {
-      method: 'POST',
-      url: 'http://localhost:5000/ventas',
-      headers: { 'Content-Type': 'application/json' },
-      data: {
-        id_venta: nuevoVenta.id_venta,
-        fecha: nuevoVenta.fecha,
-        producto: nuevoVenta.producto,
-        id_cliente: nuevoVenta.id_cliente, vendedor: nuevoVenta.vendedor,
-        cantidad: nuevoVenta.cantidad, precio: nuevoVenta.precio
-      },
-    };
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success('Venta registrada con éxito');
-      })
-      .catch(function (error) {
-        console.error(error);
-        toast.error('Error creando un vehículo');
-      });
+
+    await crearVenta({
+      id_venta: nuevoVenta.id_venta,
+      fecha: nuevoVenta.fecha,
+      producto: nuevoVenta.producto,
+      id_cliente: nuevoVenta.id_cliente, vendedor: nuevoVenta.vendedor,
+      cantidad: nuevoVenta.cantidad, precio: nuevoVenta.precio
+    },
+    (response)=>{
+      console.log(response.data);
+      toast.success("Venta registrada exitosamente")
+    },
+    (error)=>{
+      console.error(error);
+      toast.error("Error al registra la venta")
+    });     
+       
     setMostrarTabla(true)
-    toast.success("Venta Registrada")
+  
 
   }
   return (
