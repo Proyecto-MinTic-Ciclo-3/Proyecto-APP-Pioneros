@@ -4,13 +4,7 @@ import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { deleteVenta } from 'utils/api';
-import { editarVenta } from 'utils/api';
-import { crearVenta } from 'utils/api';
-import { obtenerVentas } from 'utils/api';
-
-
-
+import { deleteVenta,editarVenta,crearVenta,obtenerVentas } from 'utils/api';
 
 const Ventas = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
@@ -324,12 +318,14 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
         </label>
         <label className="flex flex-col" htmlFor="vendedor">
           Vendedor:
-          <input
-            required
-            name="vendedor"
-            className="bg-gray-50 border border-gray-500 m-0.1 rounded-md "
-            type='text'
-            placeholder='Nombre del vendedor' autoComplete="off" />
+          <select name="vendedor" id="vendedor" className="bg-gray-50 border border-gray-500 m-0.1 rounded-md select-text to-blue-500 ">
+            <option selected>Seleccione un vendendor</option>
+            <option >Yohana Zuluaga</option>
+            <option>Juan Manuel Quijano</option>
+            <option>Juan Diego Calvo</option>
+            <option>Estefania Cordoba</option>
+            <option>Luisa Porras</option>
+          </select>
         </label>
         <label className="flex flex-col" htmlFor="cantidad">
           Cantidad:
