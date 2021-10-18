@@ -9,10 +9,10 @@ import Registro from "pages/Registro"
 import { BrowserRouter as Router, Switch, Route, } from "react-router-dom";
 import 'styles/App.css'
 
-
 function App() {
+
   return (
-    <div className="App">      
+    <div className="App">     
       <Router>
         <Switch>
           <Route path={["/menu","/menu/ventas","/menu/productos","/menu/usuarios"]}>
@@ -49,9 +49,18 @@ function App() {
           </Route>       
       </Switch>
     </Router>
+
+  
   </div>     
     
   );
+
+
+
+
+
+
+
 }
 
 export default App;
