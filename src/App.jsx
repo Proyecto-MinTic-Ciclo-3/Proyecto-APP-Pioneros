@@ -8,48 +8,55 @@ import Productos from "pages/menu/Productos";
 import Registro from "pages/Registro"
 import { BrowserRouter as Router, Switch, Route, } from "react-router-dom";
 import 'styles/App.css'
+import {Auth0Provider} from '@auth0/auth0-react';
 
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Switch>
-          <Route path={["/menu","/menu/ventas","/menu/productos","/menu/usuarios"]}>
-              <PrivateLayout>
-                <Switch>              
-                      <Route path="/menu/ventas">
-                        <Ventas/>
-                      </Route>
-                      <Route path="/menu/productos">
-                        <Productos/>
-                      </Route>
-                      <Route path="/menu/usuarios">
-                        <Usuarios/>
-                      </Route>
-                      <Route path="/">
-                        <Menu/>
-                      </Route>
+    <Auth0Provider
+    domain="misiontic-pioneros.us.auth0.com"
+    clientId="8Vf9BqBSBYxyXBk6nXhsewnZdwzHyGIL"
+    redirectUri={window.location.origin}
+    >
+      <div className="App">
+        <Router>
+          <Switch>
+            <Route path={["/menu","/menu/ventas","/menu/productos","/menu/usuarios"]}>
+                <PrivateLayout>
+                  <Switch>              
+                        <Route path="/menu/ventas">
+                          <Ventas/>
+                        </Route>
+                        <Route path="/menu/productos">
+                          <Productos/>
+                        </Route>
+                        <Route path="/menu/usuarios">
+                          <Usuarios/>
+                        </Route>
+                        <Route path="/">
+                          <Menu/>
+                        </Route>
+                  </Switch>
+                </PrivateLayout>
+            </Route>
+                                      
+            
+            <Route path={["/","/registro"]}>
+              <AuthonLayout>
+                <Switch>
+                  <Route path="/registro">
+                    <Registro/>  
+                  </Route>
+                  <Route path="/">
+                    <Index/>
+                  </Route>
                 </Switch>
-              </PrivateLayout>
-          </Route>
-                                     
-           
-          <Route path={["/","/registro"]}>
-            <AuthonLayout>
-              <Switch>
-                <Route path="/registro">
-                  <Registro/>  
-                </Route>
-                <Route path="/">
-                  <Index/>
-                </Route>
-              </Switch>
-            </AuthonLayout>
-          </Route>       
-      </Switch>
-    </Router>
-  </div>   
+              </AuthonLayout>
+            </Route>       
+        </Switch>
+      </Router>
+      </div>
+    </Auth0Provider>   
     
   );
 }

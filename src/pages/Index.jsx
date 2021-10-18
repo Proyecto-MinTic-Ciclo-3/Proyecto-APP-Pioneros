@@ -1,10 +1,12 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import Google from '../media/google.png';
+import { useAuth0 } from "@auth0/auth0-react";
 
-const Index = () => {
-    return (
-        <>
+function Index() {
+  const { loginWithRedirect } = useAuth0();
+  return (
+    <>
       <div className='max-w-md w-full -space-y-0'>
         <h2 className='text-center text-3xl font-extrabold text-gray-600'>
           Iniciar Sesion
@@ -20,8 +22,7 @@ const Index = () => {
                 autoComplete='email'
                 required
                 className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-                placeholder='Correo Electrónico'
-              />
+                placeholder='Correo Electrónico' />
             </div>
             <div>
               <label>Clave</label>
@@ -32,8 +33,7 @@ const Index = () => {
                 autoComplete='current-password'
                 required
                 className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm font-light'
-                placeholder='Digita tu contraseña'
-              />
+                placeholder='Digita tu contraseña' />
             </div>
           </div>
 
@@ -43,8 +43,7 @@ const Index = () => {
                 id='remember-me'
                 name='remember-me'
                 type='checkbox'
-                className='h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded'
-              />
+                className='h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded' />
               <label htmlFor='remember-me' className='ml-2 block text-sm text-gray-900'>
                 Recuérdame
               </label>
@@ -58,16 +57,10 @@ const Index = () => {
           </div>
           <div>
             <button
+              onClick={() => loginWithRedirect()}
               type='submit'
               className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-            >
-              <span className='absolute left-0 inset-y-0 flex items-center pl-3'>
-                {/* <LockClosedIcon
-                  className='h-5 w-5 text-indigo-500 group-hover:text-indigo-400'
-                  aria-hidden='true'
-                /> */}
-              </span>
-              <Link to='/menu'>Inicia sesión</Link>
+            >Iniciar sesión
             </button>
           </div>
 

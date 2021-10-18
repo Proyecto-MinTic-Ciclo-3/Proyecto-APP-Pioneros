@@ -4,8 +4,10 @@ import { Link} from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCashRegister, faChevronCircleDown, faPoll,  faUsers } from '@fortawesome/free-solid-svg-icons'
 import useActiveRoute from 'hooks/useActiveRoute'
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Sidebar = () => {
+  const { logout } = useAuth0();
   return (
     <nav className="hidden lg:flex md:flex w-72  flex-col   bg-gradient-to-t from-gray-500 to-white p-4 ">
 
@@ -18,7 +20,7 @@ const Sidebar = () => {
         <Ruta icono={faPoll} ruta='/menu/productos' nombre='Gestión de Productos' />
         <Ruta icono={faUsers} ruta='/menu/usuarios' nombre='Gestión de Usuarios' />
       </div>
-      <button>Cerrar Sesión</button>
+      <button onClick={()=>logout({ returnTo: window.location.origin })}>Cerrar Sesión</button>
     </nav>
 
 
