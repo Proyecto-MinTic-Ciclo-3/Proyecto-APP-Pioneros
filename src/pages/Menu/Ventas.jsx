@@ -5,20 +5,28 @@ import React, { useEffect, useState, useRef } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { deleteVenta,editarVenta,crearVenta,obtenerVentas } from 'utils/api';
+import ReactLoading from 'react-loading';
 
 const Ventas = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
   const [ventas, setVentas] = useState([]);
   const [texto, setTexto] = useState(["Registrar"]);
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
+  const [loading, setLoading]= useState(false)
+
 
   useEffect(() => {
-    if (ejecutarConsulta) {
-      obtenerVentas(
-        (response)=>{setVentas(response.data)},
-        (error)=>{console.error(error)}
+    const fetchVentas=async()=>{
+      setLoading(true)
+      await obtenerVentas(
+        (response)=>{setVentas(response.data); setEjecutarConsulta(false); setLoading(false)},
+        (error)=>{console.error(error); setLoading(false)}
       );
-      setEjecutarConsulta(false)      
+    }
+    if (ejecutarConsulta) {
+      
+      fetchVentas();
+            
     }
   }, [ejecutarConsulta]);
 
@@ -28,6 +36,7 @@ const Ventas = () => {
       setEjecutarConsulta(true)
     }
   }, [mostrarTabla]);
+
 
   useEffect(() => {
     if (mostrarTabla) {
@@ -50,8 +59,7 @@ const Ventas = () => {
         
         <button onClick={() => { setMostrarTabla(!mostrarTabla) }} className=' cursor-pointer m-1  py-2 px-2 border border-transparent text-sm font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 self-end'>{texto}</button>
         
-
-        {mostrarTabla ? <TablaVentas listaVentas={ventas} setEjecutarConsulta={setEjecutarConsulta} /> : <FormularioRegistroVentas setMostrarTabla={setMostrarTabla} setVentas={setVentas} listaVentas={ventas} />}
+        {mostrarTabla ? <TablaVentas loading={loading} listaVentas={ventas} setEjecutarConsulta={setEjecutarConsulta} /> : <FormularioRegistroVentas setMostrarTabla={setMostrarTabla} setVentas={setVentas} listaVentas={ventas} />}
         <ToastContainer
           position="top-center"
           autoClose={5000}
@@ -64,7 +72,7 @@ const Ventas = () => {
   )
 }
 
-const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
+const TablaVentas = ({loading, listaVentas, setEjecutarConsulta }) => {
   const [busqueda, setBusqueda] = useState('');
   const [ventasFiltradas, setVentasFiltradas] = useState(listaVentas);
 
@@ -91,7 +99,7 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
         </label>
       </div>
       <h1 className="mb-2 text-gray-900 text-xl text-center font-bold">Lista de ventas</h1>
-
+      {loading? (<ReactLoading type="spokes" color='#abc123' height={500} with={300}/>):(
       <table className="tabla">
         <thead>
           <tr>
@@ -112,14 +120,13 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
             );
           })}
         </tbody>
-      </table>
+      </table>)}
 
     </div>
   )
 
 }
-const FilaVenta = ({
-  venta, setEjecutarConsulta }) => {
+const FilaVenta = ({venta, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false)
   const [infoNuevaVenta, setInfoNuevaVenta] = useState(
     {
@@ -131,9 +138,7 @@ const FilaVenta = ({
       vendedor: venta.vendedor,
       cantidad: venta.cantidad,
       precio: venta.precio
-    }
-
-  )
+    })
   const actualizarventa = async () => {
     //enviar la info al backend
     console.log(venta)
@@ -246,7 +251,7 @@ const FilaVenta = ({
 
 }
 
-const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) => {
+const FormularioRegistroVentas = ({ setMostrarTabla}) => {
   const form = useRef(null)
   const submitForm = async (e) => {
     e.preventDefault();
