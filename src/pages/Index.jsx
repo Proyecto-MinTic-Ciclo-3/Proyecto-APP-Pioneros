@@ -7,6 +7,7 @@ function Index() {
   const { loginWithRedirect } = useAuth0();
   return (
     <>
+
       <div className='max-w-md w-full -space-y-0'>
         <h2 className='text-center text-3xl font-extrabold text-gray-600'>
           Iniciar Sesion
@@ -72,7 +73,7 @@ function Index() {
           </div>
         </form>
       </div>
-      <div className='flex items-center justify-center'>
+      {/*<div className='flex items-center justify-center'>
         <span className='mx-4'>-------------------</span>
         <h2 className='my-4 text-center text-sm font-extrabold text-gray-900'>O</h2>
         <span className='mx-4'>---------------------</span>
@@ -83,13 +84,30 @@ function Index() {
             type='submit'
             className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
           >
-            <div className='flex items-center justify-start'>
+            <div className='c'>
               <img src={Google} alt='Logo Google' className='h-6 w-6' />
               <span className='mx-4'>Continúa con Google</span>
             </div>
           </button>
         </div>
+              </div>*/}
+      
+      <div className="flex items-center justify-center">
+        <br /><br />
+          <GoogleLogin
+      clientId="10988967631-hsrbs072eqtj3vt7efkm6grnmv673juh.apps.googleusercontent.com"
+      buttonText="Continúa con Google"
+      className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
+
+      /*render={renderProps => (
+      <button onClick={renderProps.onClick} disabled={renderProps.disabled}>This is my custom Google button</button>
+      )}*/
+      onSuccess={respuestaGoogle}
+      onFailure={respuestaGoogle}
+      cookiePolicy={'single_host_origin'}
+          />    
       </div>
+
     </>
   );
 }

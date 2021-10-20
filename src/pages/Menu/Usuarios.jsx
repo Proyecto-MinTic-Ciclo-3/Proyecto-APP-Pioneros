@@ -122,7 +122,7 @@ const TablaUsuarios = ({ listaUsuarios,setEjecutarConsulta,loading}) => {
             return (
               <FilaUsuario key={nanoid()} usuario={usuario} setEjecutarConsulta={setEjecutarConsulta} />
             );
-          })};
+          })}
         </tbody>
       </table>)};
           
