@@ -12,7 +12,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 
 function App() {
   return (
-    <div className="App">
+    <>    
       <Auth0Provider
         domain="misiontic-pioneros.us.auth0.com"
         clientId="8Vf9BqBSBYxyXBk6nXhsewnZdwzHyGIL"
@@ -108,7 +108,7 @@ function App() {
           </Switch>
         </Router>
       </div>
-    </div>
+    </>
   );
 }
 
