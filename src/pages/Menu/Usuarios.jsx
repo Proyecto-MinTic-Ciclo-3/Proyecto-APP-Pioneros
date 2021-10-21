@@ -124,7 +124,7 @@ const TablaUsuarios = ({ listaUsuarios,setEjecutarConsulta,loading}) => {
             );
           })}
         </tbody>
-      </table>)};
+      </table>)}
           
     </div>
   )

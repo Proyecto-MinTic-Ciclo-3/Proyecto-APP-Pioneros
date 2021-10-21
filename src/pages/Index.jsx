@@ -1,6 +1,5 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import Google from '../media/google.png';
 import { useAuth0 } from "@auth0/auth0-react";
 
 function Index() {
@@ -90,23 +89,7 @@ function Index() {
             </div>
           </button>
         </div>
-              </div>*/}
-      
-      <div className="flex items-center justify-center">
-        <br /><br />
-          <GoogleLogin
-      clientId="10988967631-hsrbs072eqtj3vt7efkm6grnmv673juh.apps.googleusercontent.com"
-      buttonText="Continúa con Google"
-      className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
-
-      /*render={renderProps => (
-      <button onClick={renderProps.onClick} disabled={renderProps.disabled}>This is my custom Google button</button>
-      )}*/
-      onSuccess={respuestaGoogle}
-      onFailure={respuestaGoogle}
-      cookiePolicy={'single_host_origin'}
-          />    
-      </div>
+              </div>*/}           
 
     </>
   );
