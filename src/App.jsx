@@ -16,7 +16,7 @@ function App() {
       <Auth0Provider
         domain="misiontic-pioneros.us.auth0.com"
         clientId="8Vf9BqBSBYxyXBk6nXhsewnZdwzHyGIL"
-        redirectUri="https://afternoon-headland-01153.herokuapp.com/menu"
+        redirectUri="http://localhost:3000/menu"
         audience="Backend-Api-Autenticacion-Pioneros-Misiontic"
       >
         <div className="App">
