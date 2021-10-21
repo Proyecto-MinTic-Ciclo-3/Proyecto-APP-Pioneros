@@ -4,45 +4,39 @@ import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
-
-
-
+import { deleteVenta,editarVenta,crearVenta,obtenerVentas } from 'utils/api';
+import ReactLoading from 'react-loading';
 
 const Ventas = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
   const [ventas, setVentas] = useState([]);
   const [texto, setTexto] = useState(["Registrar"]);
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
-
-  const obtenerVentas = async () => {
-    const options = { method: 'GET', url: 'http://localhost:5000/ventas' };
-    await axios
-      .request(options)
-      .then(function (response) {
-        setVentas(response.data);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-    setEjecutarConsulta(false)
-  };
+  const [loading, setLoading]= useState(false)
 
 
   useEffect(() => {
+    const fetchVentas=async()=>{
+      setLoading(true)
+      await obtenerVentas(
+        (response)=>{setVentas(response.data); setEjecutarConsulta(false); setLoading(false)},
+        (error)=>{console.error(error); setLoading(false)}
+      );
+    }
     if (ejecutarConsulta) {
-      obtenerVentas();
-      setEjecutarConsulta(false);
+      
+      fetchVentas();
+            
     }
   }, [ejecutarConsulta]);
 
   useEffect(() => {
     //obtener lista de vehículos desde el backend
     if (mostrarTabla) {
-
       setEjecutarConsulta(true)
     }
   }, [mostrarTabla]);
+
 
   useEffect(() => {
     if (mostrarTabla) {
@@ -65,8 +59,7 @@ const Ventas = () => {
         
         <button onClick={() => { setMostrarTabla(!mostrarTabla) }} className=' cursor-pointer m-1  py-2 px-2 border border-transparent text-sm font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 self-end'>{texto}</button>
         
-
-        {mostrarTabla ? <TablaVentas listaVentas={ventas} setEjecutarConsulta={setEjecutarConsulta} /> : <FormularioRegistroVentas setMostrarTabla={setMostrarTabla} setVentas={setVentas} listaVentas={ventas} />}
+        {mostrarTabla ? <TablaVentas loading={loading} listaVentas={ventas} setEjecutarConsulta={setEjecutarConsulta} /> : <FormularioRegistroVentas setMostrarTabla={setMostrarTabla} setVentas={setVentas} listaVentas={ventas} />}
         <ToastContainer
           position="top-center"
           autoClose={5000}
@@ -79,7 +72,7 @@ const Ventas = () => {
   )
 }
 
-const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
+const TablaVentas = ({loading, listaVentas, setEjecutarConsulta }) => {
   const [busqueda, setBusqueda] = useState('');
   const [ventasFiltradas, setVentasFiltradas] = useState(listaVentas);
 
@@ -106,7 +99,7 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
         </label>
       </div>
       <h1 className="mb-2 text-gray-900 text-xl text-center font-bold">Lista de ventas</h1>
-
+      {loading? (<ReactLoading type="spokes" color='#abc123' height={500} with={300}/>):(
       <table className="tabla">
         <thead>
           <tr>
@@ -127,17 +120,17 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
             );
           })}
         </tbody>
-      </table>
+      </table>)}
 
     </div>
   )
 
 }
-const FilaVenta = ({
-  venta, setEjecutarConsulta }) => {
+const FilaVenta = ({venta, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false)
   const [infoNuevaVenta, setInfoNuevaVenta] = useState(
     {
+      _id:venta._id,
       id_venta: venta.id_venta,
       fecha: venta.fecha,
       producto: venta.producto,
@@ -145,51 +138,44 @@ const FilaVenta = ({
       vendedor: venta.vendedor,
       cantidad: venta.cantidad,
       precio: venta.precio
-    }
-
-  )
+    })
   const actualizarventa = async () => {
     //enviar la info al backend
     console.log(venta)
-    const options = {
-      method: 'PATCH',
-      url: `http://localhost:5000/ventas/editar`,
-      headers: { 'Content-Type': 'application/json' },
-      data: { ...infoNuevaVenta, id: venta._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success('Venta modificada con éxito');
-        setEdit(false);
-        setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        toast.error('Error modificando la venta');
+    await editarVenta(
+      venta._id,
+      {
+        id_venta: infoNuevaVenta.id_venta,
+        fecha: infoNuevaVenta.fecha,
+        producto: infoNuevaVenta.producto,
+        id_cliente: infoNuevaVenta.id_cliente,
+        vendedor: infoNuevaVenta.vendedor,
+        cantidad: infoNuevaVenta.cantidad,
+        precio: infoNuevaVenta.precio
+      },
+      (response)=>{
+        console.log(response.data)
+        toast.success('Venta actualizada')
+        setEdit(false)
+        setEjecutarConsulta(true)
+      },
+      (error)=>{
         console.error(error);
-      });
-  }
+        toast.error('<Error al actualizar la venta')
+      }); 
+  };
   const eliminarVenta = async () => {
-    const options = {
-      method: 'DELETE',
-      url: 'http://localhost:5000/ventas/eliminar',
-      headers: { 'Content-Type': 'application/json' },
-      data: { id: venta._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
+    await deleteVenta(venta._id,
+      (response)=>{
         console.log(response.data);
         toast.success('venta eliminada con éxito');
         setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
+      },
+      (error)=>{
         console.error(error);
         toast.error('Error eliminando la venta');
-      });
+      });  
+   
   }
 
 
@@ -265,7 +251,7 @@ const FilaVenta = ({
 
 }
 
-const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) => {
+const FormularioRegistroVentas = ({ setMostrarTabla}) => {
   const form = useRef(null)
   const submitForm = async (e) => {
     e.preventDefault();
@@ -275,30 +261,25 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
     fd.forEach((value, key) => {
       nuevoVenta[key] = value;
     });
-    const options = {
-      method: 'POST',
-      url: 'http://localhost:5000/ventas/nueva',
-      headers: { 'Content-Type': 'application/json' },
-      data: {
-        id_venta: nuevoVenta.id_venta,
-        fecha: nuevoVenta.fecha,
-        producto: nuevoVenta.producto,
-        id_cliente: nuevoVenta.id_cliente, vendedor: nuevoVenta.vendedor,
-        cantidad: nuevoVenta.cantidad, precio: nuevoVenta.precio
-      },
-    };
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success('Venta registrada con éxito');
-      })
-      .catch(function (error) {
-        console.error(error);
-        toast.error('Error creando un vehículo');
-      });
+
+    await crearVenta({
+      id_venta: nuevoVenta.id_venta,
+      fecha: nuevoVenta.fecha,
+      producto: nuevoVenta.producto,
+      id_cliente: nuevoVenta.id_cliente, vendedor: nuevoVenta.vendedor,
+      cantidad: nuevoVenta.cantidad, precio: nuevoVenta.precio
+    },
+    (response)=>{
+      console.log(response.data);
+      toast.success("Venta registrada exitosamente")
+    },
+    (error)=>{
+      console.error(error);
+      toast.error("Error al registra la venta")
+    });     
+       
     setMostrarTabla(true)
-    toast.success("Venta Registrada")
+  
 
   }
   return (
@@ -342,12 +323,14 @@ const FormularioRegistroVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
         </label>
         <label className="flex flex-col" htmlFor="vendedor">
           Vendedor:
-          <input
-            required
-            name="vendedor"
-            className="bg-gray-50 border border-gray-500 m-0.1 rounded-md "
-            type='text'
-            placeholder='Nombre del vendedor' autoComplete="off" />
+          <select name="vendedor" id="vendedor" className="bg-gray-50 border border-gray-500 m-0.1 rounded-md select-text to-blue-500 ">
+            <option selected>Seleccione un vendendor</option>
+            <option >Yohana Zuluaga</option>
+            <option>Juan Manuel Quijano</option>
+            <option>Juan Diego Calvo</option>
+            <option>Estefania Cordoba</option>
+            <option>Luisa Porras</option>
+          </select>
         </label>
         <label className="flex flex-col" htmlFor="cantidad">
           Cantidad:

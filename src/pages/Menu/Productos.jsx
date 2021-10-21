@@ -4,30 +4,28 @@ import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import { obtenerProductos, crearProducto } from 'utils/api';
+import { editarProducto,deleteProducto } from 'utils/api';
 
 const Productos = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
   const [productos, setProductos] = useState([]);
   const [texto, setTexto] = useState(["Registrar"]);
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
-  useEffect(()=>{
-      const obtenerProductos = async () => {
-      const options = { method: 'GET', url: 'http://localhost:5000/productos' };
-      await axios
-        .request(options)
-        .then(function (response) {
-          setProductos(response.data);
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-    };
-    if(ejecutarConsulta){
-      obtenerProductos();
-      setEjecutarConsulta(false);
+  
+  useEffect(() => {
+    const fetchProductos=async()=>{
+        await obtenerProductos(
+        (response)=>{setProductos(response.data); setEjecutarConsulta(false)},
+        (error)=>{console.error(error)}
+      );
     }
-  },[ejecutarConsulta]);
+    if (ejecutarConsulta) {
+      
+      fetchProductos();
+            
+    }
+  }, [ejecutarConsulta]);
 
   useEffect(() => {    
     if (mostrarTabla) {      
@@ -67,7 +65,7 @@ const Productos = () => {
         </div>
 
         {mostrarTabla ? (
-          <TablaProductos listaProductos={productos} />
+          <TablaProductos listaProductos={productos} setEjecutarConsulta={setEjecutarConsulta} />
         ) : (
           <FormularioRegistroProductos
             setMostrarTabla={setMostrarTabla}
@@ -114,59 +112,54 @@ const TablaProductos = ({ listaProductos,setEjecutarConsulta }) => {
   )
 
 }
-const FilaProducto = ({ 
-  producto, setEjecutarConsulta}) => {
+const FilaProducto = ({ producto, setEjecutarConsulta}) => {
   const [edit, setEdit] = useState(false)
   const [infoNuevoProducto,setinfoNuevoProducto]=useState(
-    {id_producto:producto.id_producto,
+    {
+     
+    id_producto:producto.id_producto,
     nombreProducto:producto.nombreProducto,
     proveedor:producto.proveedor,        
     cantidad:producto.cantidad,
     precio: producto.precio,
     fechaIngreso:producto.fechaIngreso
-}
-
-  )
+});
   const actualizarProducto= async()=>{        
-    const options = {
-      method: 'PATCH',
-      url: `http://localhost:5000/productos/editar`,
-      headers: { 'Content-Type': 'application/json' },
-      data: { ...infoNuevoProducto,id:producto._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success('Producto modificado con éxito');
-        setEdit(false);
-        setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        toast.error('Error modificando el producto');
+   
+    await editarProducto(
+      producto._id,
+      {
+        id_producto: infoNuevoProducto.id_producto,
+        nombreProducto: infoNuevoProducto.nombreProducto,
+        proveedor: infoNuevoProducto.proveedor,
+        cantidad: infoNuevoProducto.cantidad,
+        precio: infoNuevoProducto.precio,
+        fechaIngreso: infoNuevoProducto.fechaIngreso        
+      },
+      (response)=>{
+        console.log(response.data)
+        toast.success('producto Actualizado')
+        setEdit(false)
+        setEjecutarConsulta(true)
+      },
+      (error)=>{
         console.error(error);
-      });        
-  }
-  const eliminarProducto=async()=>{
-    const options = {
-      method: 'DELETE',
-      url: 'http://localhost:5000/productos/eliminar',
-      headers: { 'Content-Type': 'application/json' },
-      data: { id: producto._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
+        toast.error('<Error al actualizar producto')
+      }); 
+  };        
+  
+  const eliminarProducto = async () => {
+    await deleteProducto(producto._id,
+      (response)=>{
         console.log(response.data);
-        toast.success('Producto eliminado con éxito');
+        toast.success('producto eliminado con éxito');
         setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
+      },
+      (error)=>{
         console.error(error);
-        toast.error('Error eliminando el producto');
-      });
+        toast.error('Error eliminando producto');
+      });  
+   
   }
 
 
@@ -237,8 +230,7 @@ const FilaProducto = ({
 
 const FormularioRegistroProductos = ({
     setMostrarTabla,
-    listaProductos,
-    setProductos,
+    
   }) => {
     const form = useRef(null);
     const submitForm = async (e) => {
@@ -249,30 +241,24 @@ const FormularioRegistroProductos = ({
       fd.forEach((value, key) => {
         nuevoProductos[key] = value;
       });
-      const options = {
-        method: 'POST',
-        url: 'http://localhost:5000/productos/nuevo',
-        headers: { 'Content-Type': 'application/json' },
-        data: { id_producto: nuevoProductos.id_producto,
+      await crearProducto({ 
+            id_producto: nuevoProductos.id_producto,
             nombreProducto: nuevoProductos.nombreProducto,
             proveedor: nuevoProductos.proveedor,
             cantidad: nuevoProductos.cantidad,
             precio: nuevoProductos.precio,
             fechaIngreso: nuevoProductos.fechaIngreso
       },
-    };await axios
-      .request(options)
-      .then(function (response) {
+      (response)=>{
         console.log(response.data);
-        toast.success('Producto registrado con éxito');
-      })
-      .catch(function (error) {
+        toast.success("Producto registrada exitosamente")
+      },
+      (error)=>{
         console.error(error);
-        toast.error('Error registrando el producto');
-      });
+        toast.error("Error al registra producto")
+      });     
     setMostrarTabla(true)
-    toast.success("Producto Registrado")
-    
+        
   }
   return (
     <div>
@@ -293,7 +279,7 @@ const FormularioRegistroProductos = ({
           Nombre Producto:
           <input
             required
-            name="producto"
+            name="nombreProducto"
             className="bg-gray-50 border border-gray-500  m-0.1 rounded-md "
             type="text"
             placeholder="Nombre Producto"
@@ -303,7 +289,7 @@ const FormularioRegistroProductos = ({
           Proveedor: 
           <input
             required
-            name="nombreProveedor"
+            name="proveedor"
             className="bg-gray-50 border border-gray-500 m-0.1 rounded-md "
             type="text"
             placeholder="Nombre Proveedor"
@@ -333,7 +319,7 @@ const FormularioRegistroProductos = ({
           Fecha Ingreso:
           <input
             required
-            name="fecha"
+            name="fechaIngreso"
             className="bg-gray-50 border border-gray-500  m-0.1 rounded-md "
             type="date"
             placeholder="Fecha Ingreso"

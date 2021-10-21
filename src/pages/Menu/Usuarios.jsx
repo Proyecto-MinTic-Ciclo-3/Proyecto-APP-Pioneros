@@ -4,7 +4,10 @@ import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import { obtenerUsuarios,crearUsuario, editarUsuario, deleteUsuario} from 'utils/api';
+import ReactLoading from 'react-loading';
+
+
 
 
 const Usuarios = () => {
@@ -12,23 +15,22 @@ const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [texto, setTexto] = useState(["Registrar"]);
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
-  useEffect(()=>{
-      const obtenerUsuarios = async () => {
-      const options = { method: 'GET', url: 'http://localhost:5000/usuarios' };
-      await axios
-        .request(options)
-        .then(function (response) {
-          setUsuarios(response.data);
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-    };
-    if(ejecutarConsulta){
-      obtenerUsuarios();
-      setEjecutarConsulta(false);
+  const [loading, setLoading]= useState(false)
+  useEffect(() => {
+    const fetchUsuarios=async()=>{
+      
+      setLoading(true)
+      await obtenerUsuarios(
+        (response)=>{setUsuarios(response.data); setEjecutarConsulta(false); setLoading(false)},
+        (error)=>{console.error(error); setLoading(false)}
+      );
     }
-  },[ejecutarConsulta]);
+    if (ejecutarConsulta) {
+      
+      fetchUsuarios();
+            
+    }
+  }, [ejecutarConsulta]);
 
   useEffect(() => {
     //obtener lista de vehículos desde el backend
@@ -56,17 +58,13 @@ const Usuarios = () => {
 
       <div className="flex flex-col items-center ml-60">
         <h1 className="mt-5 mb-2 text-gray-900 text-2xl font-bold">Administración de Usuarios</h1>
-        <div className="flex flex-row w-full  justify-between items-center">
-          <div>
-            <label>
-              <span className="text-xl font-bold mr-1">Buscar:</span>
-              <input className="rounded" placeholder="Digite el id del usuario" />
-            </label>
-          </div>
-          <button onClick={() => { setMostrarTabla(!mostrarTabla) }} className=' cursor-pointer m-1 group relative flex justify-center py-2 px-2 border border-transparent text-sm font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 '>{texto}</button>
-        </div>
+        <button
+         onClick={() => { setMostrarTabla(!mostrarTabla) }} 
+         className='cursor-pointer m-1  py-2 px-2 border border-transparent text-sm font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 self-end'>
+        {texto}
+        </button>      
 
-        {mostrarTabla ? <TablaUsuarios listaUsuarios={usuarios} setEjecutarConsulta={setEjecutarConsulta}/> : <FormularioRegistroUsuarios setMostrarTabla={setMostrarTabla} setUsuarios={setUsuarios} listaUsuarios={usuarios} />}
+        {mostrarTabla ? <TablaUsuarios loading={loading} listaUsuarios={usuarios} setEjecutarConsulta={setEjecutarConsulta}/> : <FormularioRegistroUsuarios setMostrarTabla={setMostrarTabla} setUsuarios={setUsuarios} listaUsuarios={usuarios} />}
         <ToastContainer
           position="top-center"
           autoClose={5000}
@@ -78,13 +76,35 @@ const Usuarios = () => {
 
   )
 }
-const TablaUsuarios = ({ listaUsuarios,setEjecutarConsulta }) => {
+const TablaUsuarios = ({ listaUsuarios,setEjecutarConsulta,loading}) => {
+  const [busqueda, setBusqueda] = useState('');
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState(listaUsuarios);
+
+  useEffect(() => {
+    setUsuariosFiltrados(
+      listaUsuarios.filter((elemento) => {
+        return JSON.stringify(elemento).toLowerCase().includes(busqueda.toLowerCase());
+      })
+    );
+  }, [busqueda, listaUsuarios]);
+
 
 
   return (
     <div>
+      <div>
+        <label>
+          <span className="text-xl font-bold mr-1">Buscar:</span>
+          <input
+            value={busqueda}
+            type="search"
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="rounded focus: outline-none border border-gray-600"
+            placeholder="Digite el id del usuario" />
+        </label>
+      </div>
       <h1 className="mb-2 text-gray-900 text-xl text-center font-bold">Lista de Usuarios</h1>
-      
+      {loading? (<ReactLoading type="spokes" color='#abc123' height={500} with={300}/>):(      
       <table className="tabla">
         <thead>
           <tr>
@@ -98,13 +118,13 @@ const TablaUsuarios = ({ listaUsuarios,setEjecutarConsulta }) => {
           </tr>
         </thead>
         <tbody>
-          {listaUsuarios.map((usuario, index) => {
+          {usuariosFiltrados.map((usuario, index) => {
             return (
               <FilaUsuario key={nanoid()} usuario={usuario} setEjecutarConsulta={setEjecutarConsulta} />
             );
           })}
         </tbody>
-      </table>
+      </table>)};
           
     </div>
   )
@@ -114,59 +134,52 @@ const FilaUsuario = ({
   usuario, setEjecutarConsulta}) => {
   const [edit, setEdit] = useState(false)
   const [infoNuevoUsuario,setInfoNuevoUsuario]=useState(
-    {id_usuario:usuario.id_usuario,
+    {
+    _id:usuario._id,
+    id_usuario:usuario.id_usuario,
     nombre:usuario.nombre,
     apellido:usuario.apellido,
     cedula:usuario.cedula,
     correo:usuario.correo,
     rol:usuario.rol
-    }
-
-  )
+    });
   const actualizarUsuario= async()=>{
-    //enviar la info al backend
-    //console.log(usuario)
-    const options = {
-      method: 'PATCH',
-      url: `http://localhost:5000/usuarios/editar`,
-      headers: { 'Content-Type': 'application/json' },
-      data: { ...infoNuevoUsuario,id:usuario._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success('usuario Modificado con éxito');
-        setEdit(false);
-        setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        toast.error('Error modificando el usuario');
-        console.error(error);
-      });        
-  }
+    
+    await editarUsuario(
+      usuario._id,
+    {
+      id_usuario:infoNuevoUsuario.id_usuario,
+      nombre:infoNuevoUsuario.nombre,
+      apellido:infoNuevoUsuario.apellido,
+      cedula:infoNuevoUsuario.cedula,
+      correo:infoNuevoUsuario.correo,
+      rol:infoNuevoUsuario.rol
+    },     
+    (response)=>{
+     console.log(response.data)
+     toast.success('Usuario actualizado')
+     setEdit(false)
+     setEjecutarConsulta(true)
+    },
+    (error)=>{
+      console.error(error);
+      toast.error('<Error al actualizar Usuario')
+    }); 
+       
+  };
   const eliminarUsuario=async()=>{
-    const options = {
-      method: 'DELETE',
-      url: 'http://localhost:5000/usuarios/eliminar',
-      headers: { 'Content-Type': 'application/json' },
-      data: { id: usuario._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success('Usuario eliminado  con éxito');
-        setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        console.error(error);
-        toast.error('Error eliminando usuario');
-      });
+    await deleteUsuario(usuario._id,
+    (response)=>{
+      console.log(response.data);
+      toast.success('usuario eliminado con éxito');
+      setEjecutarConsulta(true);
+    },
+    (error)=>{
+      console.error(error);
+      toast.error('Error eliminando usuario');
+    });
+    
   }
-
 
   return (
     <tr >
@@ -234,7 +247,7 @@ const FilaUsuario = ({
 
 }
 
-const FormularioRegistroUsuarios = ({ setMostrarTabla, listaVentas, setVentas }) => {
+const FormularioRegistroUsuarios = ({ setMostrarTabla}) => {
   const form = useRef(null)
   const submitForm = async (e) => {
     e.preventDefault();
@@ -244,28 +257,26 @@ const FormularioRegistroUsuarios = ({ setMostrarTabla, listaVentas, setVentas })
     fd.forEach((value, key) => {
       nuevoUsuario[key] = value;
     });
-    const options = {
-      method: 'POST',
-      url: 'http://localhost:5000/usuarios/nuevo',
-      headers: { 'Content-Type': 'application/json' },
-      data: { id_usuario: nuevoUsuario.id_usuario,
+
+    await crearUsuario({
+       id_usuario: nuevoUsuario.id_usuario,
        nombre: nuevoUsuario.nombre,
         apellido: nuevoUsuario.apellido,
-         cedula:nuevoUsuario.cedula,correo:nuevoUsuario.correo, 
+         cedula:nuevoUsuario.cedula,
+         correo:nuevoUsuario.correo, 
         rol:nuevoUsuario.rol },
-    };
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success('usuatio registrado con éxito');
-      })
-      .catch(function (error) {
-        console.error(error);
-        toast.error('Error creando un vehículo');
-      });
+        (response)=>{
+          console.log(response.data)
+          toast.success("Usuario Creado Exitosamente")
+        },
+        (error)=>{
+          console.error(error);
+          toast.error("Error al crear el usuario")
+        }
+        )   
+    
     setMostrarTabla(true)
-    toast.success("Usuario Registrado")
+    
     
   }
   return (
